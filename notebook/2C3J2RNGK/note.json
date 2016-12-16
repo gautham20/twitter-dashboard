@@ -1,0 +1,877 @@
+{
+  "paragraphs": [
+    {
+      "text": "import org.apache.spark.sql.SparkSession\nimport org.apache.spark.sql.functions._\nimport org.apache.spark.sql.types._",
+      "dateUpdated": "Dec 12, 2016 9:06:34 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481513514489_778185811",
+      "id": "20161212-090154_1031936625",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nimport org.apache.spark.sql.SparkSession\n\nimport org.apache.spark.sql.functions._\n\nimport org.apache.spark.sql.types._\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:01:54 AM",
+      "dateStarted": "Dec 12, 2016 9:06:34 AM",
+      "dateFinished": "Dec 12, 2016 9:06:59 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sh\n\nls trainingandtestdata",
+      "dateUpdated": "Dec 12, 2016 9:07:05 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481513794335_1960902285",
+      "id": "20161212-090634_397855644",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "testdata.manual.2009.06.14.csv\ntrain3000.csv\ntraining.1600000.processed.noemoticon.csv\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:06:34 AM",
+      "dateStarted": "Dec 12, 2016 9:07:05 AM",
+      "dateFinished": "Dec 12, 2016 9:07:06 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md #reading the data",
+      "dateUpdated": "Dec 12, 2016 9:36:44 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481513880387_-1061746371",
+      "id": "20161212-090800_1412225071",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch1\u003ereading the data\u003c/h1\u003e\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:08:00 AM",
+      "dateStarted": "Dec 12, 2016 9:36:44 AM",
+      "dateFinished": "Dec 12, 2016 9:36:44 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val dataSchema \u003d new StructType().add(\"sentiment\", DoubleType)\n                    .add(\"tweetId\", LongType)\n                    .add(\"timeStamp\", StringType)\n                    .add(\"query\", StringType)\n                    .add(\"userId\", StringType)\n                    .add(\"text\", StringType)\n                    \nprintln(spark.version)\n\nval raw_train \u003d spark.read\n                .schema(dataSchema)\n                .csv(\"./trainingandtestdata/training.1600000.processed.noemoticon.csv\")\n                \nval raw_test  \u003d spark.read\n                .schema(dataSchema)\n                .csv(\"./trainingandtestdata/testdata.manual.2009.06.14.csv\")",
+      "dateUpdated": "Dec 12, 2016 5:48:27 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481513825020_1363817965",
+      "id": "20161212-090705_1961226751",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\ndataSchema: org.apache.spark.sql.types.StructType \u003d StructType(StructField(sentiment,DoubleType,true), StructField(tweetId,LongType,true), StructField(timeStamp,StringType,true), StructField(query,StringType,true), StructField(userId,StringType,true), StructField(text,StringType,true))\n2.0.1\n\nraw_train: org.apache.spark.sql.DataFrame \u003d [sentiment: double, tweetId: bigint ... 4 more fields]\n\nraw_test: org.apache.spark.sql.DataFrame \u003d [sentiment: double, tweetId: bigint ... 4 more fields]\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:07:05 AM",
+      "dateStarted": "Dec 12, 2016 5:48:27 AM",
+      "dateFinished": "Dec 12, 2016 5:48:29 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val raw10_train \u003d raw_train.sample(withReplacement \u003d false, fraction \u003d 1)\nval raw10_test \u003d raw_test.sample(withReplacement \u003d false, fraction \u003d 1)",
+      "dateUpdated": "Dec 12, 2016 5:48:37 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481513856285_-367690004",
+      "id": "20161212-090736_2107205437",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nraw10_train: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [sentiment: double, tweetId: bigint ... 4 more fields]\n\nraw10_test: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [sentiment: double, tweetId: bigint ... 4 more fields]\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:07:36 AM",
+      "dateStarted": "Dec 12, 2016 5:48:37 AM",
+      "dateFinished": "Dec 12, 2016 5:48:38 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "raw10_train.groupBy(\"sentiment\").count.show()",
+      "dateUpdated": "Dec 12, 2016 9:37:41 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515649209_-1987155608",
+      "id": "20161212-093729_1742528049",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---------+------+\n|sentiment| count|\n+---------+------+\n|      0.0|799830|\n|      4.0|799914|\n+---------+------+\n\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:37:29 AM",
+      "dateStarted": "Dec 12, 2016 9:37:41 AM",
+      "dateFinished": "Dec 12, 2016 9:37:54 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md #ETL steps",
+      "dateUpdated": "Dec 12, 2016 9:38:17 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515661202_-532019944",
+      "id": "20161212-093741_974178678",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch1\u003eETL steps\u003c/h1\u003e\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:37:41 AM",
+      "dateStarted": "Dec 12, 2016 9:38:17 AM",
+      "dateFinished": "Dec 12, 2016 9:38:17 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "//remove non-printable character\n\nval clean \u003d udf((s:String) \u003d\u003e s.replaceAll(\"[^\\\\x20-\\\\x7e]\", \"\"))\n\nval train \u003d raw10_train\n                .withColumn(\"text\", clean(\u0027text))\n                .select(\"text\",\"sentiment\")\n                \nval test \u003d raw10_test\n                .withColumn(\"text\", clean(\u0027text))\n                .select(\"text\",\"sentiment\")\n            \ntrain.createOrReplaceTempView(\"train\")\ntest.createOrReplaceTempView(\"test\")\n",
+      "dateUpdated": "Dec 12, 2016 5:50:57 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515697504_-1693314718",
+      "id": "20161212-093817_1038221604",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nclean: org.apache.spark.sql.expressions.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,Some(List(StringType)))\n\ntrain: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double]\n\ntest: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double]\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:38:17 AM",
+      "dateStarted": "Dec 12, 2016 5:50:57 AM",
+      "dateFinished": "Dec 12, 2016 5:50:59 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md ###switching over to python to do text cleaning",
+      "dateUpdated": "Dec 12, 2016 9:38:43 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515708581_1393156283",
+      "id": "20161212-093828_1063772602",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch3\u003eswitching over to python to do text cleaning\u003c/h3\u003e\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:38:28 AM",
+      "dateStarted": "Dec 12, 2016 9:38:43 AM",
+      "dateFinished": "Dec 12, 2016 9:38:43 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ntrain \u003d sqlContext.table(\"train\")\ntest \u003d sqlContext.table(\"test\")",
+      "dateUpdated": "Dec 12, 2016 5:51:02 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515723499_-1625953012",
+      "id": "20161212-093843_1670951452",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Dec 12, 2016 9:38:43 AM",
+      "dateStarted": "Dec 12, 2016 5:51:02 AM",
+      "dateFinished": "Dec 12, 2016 5:51:02 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\nimport re\nfrom pyspark.sql.functions import udf\nfrom pyspark.sql.types import *\n\nurl_re \u003d r\u0027https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#\u003d]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?\u0026//\u003d]*)\u0027\n\nremove_url \u003d udf(lambda tweet: re.sub(url_re, \"\", tweet))\n\ntrain \u003d train.withColumn(\"text\",remove_url(train.text))\ntest \u003d test.withColumn(\"test\", remove_url(test.text))",
+      "dateUpdated": "Dec 12, 2016 5:51:11 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515734659_-1014420088",
+      "id": "20161212-093854_1428192046",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Dec 12, 2016 9:38:54 AM",
+      "dateStarted": "Dec 12, 2016 5:51:11 AM",
+      "dateFinished": "Dec 12, 2016 5:51:12 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\n#remove html characters like \u0026amp;\n\nimport HTMLParser\n\nhtml_parser\u003d HTMLParser.HTMLParser()\n\nprint html_parser.unescape(\"\u0026amp;\")\n\nhtml_unescape \u003d udf(lambda tweet: html_parser.unescape(tweet))\n\ntrain \u003d train.withColumn(\"text\", html_unescape(train.text))\ntest \u003d test.withColumn(\"text\", html_unescape(test.text))",
+      "dateUpdated": "Dec 12, 2016 5:51:17 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515750447_1402603151",
+      "id": "20161212-093910_612544523",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\u0026\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:39:10 AM",
+      "dateStarted": "Dec 12, 2016 5:51:17 AM",
+      "dateFinished": "Dec 12, 2016 5:51:17 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%pyspark\n\ntrain.createOrReplaceTempView(\"train\")\ntest.createOrReplaceTempView(\"test\")",
+      "dateUpdated": "Dec 12, 2016 5:51:19 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515764489_-1085552662",
+      "id": "20161212-093924_1973871677",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Dec 12, 2016 9:39:24 AM",
+      "dateStarted": "Dec 12, 2016 5:51:19 AM",
+      "dateFinished": "Dec 12, 2016 5:51:19 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val pyspark_train \u003d sqlContext.table(\"train\")\nval pyspark_test \u003d sqlContext.table(\"test\")",
+      "dateUpdated": "Dec 12, 2016 5:51:22 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515775071_530792791",
+      "id": "20161212-093935_630708995",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\npyspark_train: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double]\n\npyspark_test: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double ... 1 more field]\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:39:35 AM",
+      "dateStarted": "Dec 12, 2016 5:51:22 AM",
+      "dateFinished": "Dec 12, 2016 5:51:23 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val remove_punctuations \u003d udf((tweet:String) \u003d\u003e tweet.replaceAll(\"[^ a-zA-Z0-9]\", \"\").toLowerCase)\nval remove_oneletters \u003d udf((tweet:String) \u003d\u003e tweet.replaceAll(\"(^| ).( |$)\", \" \"))\n\nval clean_train \u003d pyspark_train.\n                    withColumn(\"text\", remove_punctuations($\"text\"))\n                    .withColumn(\"text\", remove_oneletters($\"text\"))\nval clean_test \u003d pyspark_test.\n                    withColumn(\"text\", remove_punctuations(\u0027text))\n                    .withColumn(\"text\", remove_oneletters($\"text\"))",
+      "dateUpdated": "Dec 12, 2016 5:51:25 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515787644_1326868914",
+      "id": "20161212-093947_1479921407",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nremove_punctuations: org.apache.spark.sql.expressions.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,Some(List(StringType)))\n\nremove_oneletters: org.apache.spark.sql.expressions.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,Some(List(StringType)))\n\nclean_train: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double]\n\nclean_test: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double ... 1 more field]\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:39:47 AM",
+      "dateStarted": "Dec 12, 2016 5:51:25 AM",
+      "dateFinished": "Dec 12, 2016 5:51:27 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md ##Building the sentiment analysis Pipeline",
+      "dateUpdated": "Dec 12, 2016 9:40:18 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515800845_-146518515",
+      "id": "20161212-094000_968266009",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch2\u003eBuilding the sentiment analysis Pipeline\u003c/h2\u003e\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:40:00 AM",
+      "dateStarted": "Dec 12, 2016 9:40:18 AM",
+      "dateFinished": "Dec 12, 2016 9:40:18 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.ml.feature.{Tokenizer, StopWordsRemover, HashingTF, IDF, CountVectorizer}\nimport org.apache.spark.ml.classification.RandomForestClassificationModel\nimport org.apache.spark.ml.classification.RandomForestClassifier\nimport org.apache.spark.ml.classification.{GBTClassificationModel, GBTClassifier}\nimport org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator\nimport org.apache.spark.ml.{Pipeline, PipelineModel}\nimport org.apache.spark.ml.feature.Binarizer\nimport org.apache.spark.ml.classification.LogisticRegression\nimport org.apache.spark.ml.classification.NaiveBayes\n\nval binarizer \u003d new Binarizer()\n            .setInputCol(\"sentiment\")\n            .setOutputCol(\"sentiLabels\")\n            .setThreshold(2.0)\n            \nval cleanTrainWithLabels \u003d binarizer.transform(clean_train)\n\nval tokenizer \u003d new Tokenizer()\n                    .setInputCol(\"text\")\n                    .setOutputCol(\"words\")\n                    \nval stopWordsRemover \u003d new StopWordsRemover()\n                    .setInputCol(tokenizer.getOutputCol)\n                    .setOutputCol(\"noStopWords\")\n            \nval hashingTF \u003d new HashingTF()\n                    .setInputCol(stopWordsRemover.getOutputCol)\n                    .setOutputCol(\"rawFeatures\")\n                    .setNumFeatures(2048)\n                    \nval countvectorizer \u003d new CountVectorizer()\n                    .setMinDF(20)\n                    .setInputCol(stopWordsRemover.getOutputCol)\n                    .setOutputCol(\"rawFeatures\")\n                    \n                    \nval idf \u003d new IDF()\n            .setMinDocFreq(20)\n            .setInputCol(hashingTF.getOutputCol)\n            .setOutputCol(\"features\")\n            \n            \nval rf \u003d new RandomForestClassifier()\n            .setLabelCol(\"sentiLabels\")\n            .setNumTrees(50)\n            .setMaxDepth(3)\n            \nval lr \u003d new LogisticRegression()\n  .setMaxIter(100)\n  .setRegParam(0.3)\n  .setLabelCol(\"sentiLabels\")\n\n\n            \nval gbt \u003d new GBTClassifier()\n  .setLabelCol(\"sentiLabels\")\n  .setMaxIter(30)\n            \nval nb \u003d new NaiveBayes()\n            .setLabelCol(\"sentiLabels\")\n\n            \nval pipeline \u003d new Pipeline()\n                .setStages(Array(tokenizer, stopWordsRemover, countvectorizer, idf, nb))\n        ",
+      "dateUpdated": "Dec 12, 2016 5:58:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515818242_1751478458",
+      "id": "20161212-094018_771070710",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nimport org.apache.spark.ml.feature.{Tokenizer, StopWordsRemover, HashingTF, IDF, CountVectorizer}\n\nimport org.apache.spark.ml.classification.RandomForestClassificationModel\n\nimport org.apache.spark.ml.classification.RandomForestClassifier\n\nimport org.apache.spark.ml.classification.{GBTClassificationModel, GBTClassifier}\n\nimport org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator\n\nimport org.apache.spark.ml.{Pipeline, PipelineModel}\n\nimport org.apache.spark.ml.feature.Binarizer\n\nimport org.apache.spark.ml.classification.LogisticRegression\n\nimport org.apache.spark.ml.classification.NaiveBayes\n\nbinarizer: org.apache.spark.ml.feature.Binarizer \u003d binarizer_a2d129ea79d7\n\ncleanTrainWithLabels: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double ... 1 more field]\n\ntokenizer: org.apache.spark.ml.feature.Tokenizer \u003d tok_6def5c54f436\n\nstopWordsRemover: org.apache.spark.ml.feature.StopWordsRemover \u003d stopWords_bd38ff7da067\n\nhashingTF: org.apache.spark.ml.feature.HashingTF \u003d hashingTF_0e5fe4c3cb07\n\ncountvectorizer: org.apache.spark.ml.feature.CountVectorizer \u003d cntVec_5057cf85873d\n\nidf: org.apache.spark.ml.feature.IDF \u003d idf_286a040cd1ac\n\nrf: org.apache.spark.ml.classification.RandomForestClassifier \u003d rfc_feada63b9b62\n\nlr: org.apache.spark.ml.classification.LogisticRegression \u003d logreg_01f1c631151c\n\ngbt: org.apache.spark.ml.classification.GBTClassifier \u003d gbtc_24ca835348c4\n\nnb: org.apache.spark.ml.classification.NaiveBayes \u003d nb_3df8ce0eb756\n\npipeline: org.apache.spark.ml.Pipeline \u003d pipeline_9e9c023cf5ef\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:40:18 AM",
+      "dateStarted": "Dec 12, 2016 5:58:48 AM",
+      "dateFinished": "Dec 12, 2016 5:58:55 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "\n\nval Array(trainSubset, validation) \u003d cleanTrainWithLabels.randomSplit(Array(0.3,0.7), seed \u003d 1000)\n",
+      "dateUpdated": "Dec 12, 2016 5:59:11 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515831201_-1994421509",
+      "id": "20161212-094031_2087652328",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\n\ntrainSubset: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [text: string, sentiment: double ... 1 more field]\nvalidation: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [text: string, sentiment: double ... 1 more field]\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:40:31 AM",
+      "dateStarted": "Dec 12, 2016 5:59:11 AM",
+      "dateFinished": "Dec 12, 2016 5:59:12 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "trainSubset.groupBy(\"sentiment\").count.show()",
+      "dateUpdated": "Dec 12, 2016 5:56:49 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515868110_-1266614508",
+      "id": "20161212-094108_1355274246",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---------+------+\n|sentiment| count|\n+---------+------+\n|      0.0|239991|\n|      4.0|239696|\n+---------+------+\n\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:41:08 AM",
+      "dateStarted": "Dec 12, 2016 5:56:49 AM",
+      "dateFinished": "Dec 12, 2016 5:57:56 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val model \u003d pipeline.fit(cleanTrainWithLabels)",
+      "dateUpdated": "Dec 12, 2016 5:59:26 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515883081_1266218150",
+      "id": "20161212-094123_115756721",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nmodel: org.apache.spark.ml.PipelineModel \u003d pipeline_9e9c023cf5ef\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:41:23 AM",
+      "dateStarted": "Dec 12, 2016 5:59:26 AM",
+      "dateFinished": "Dec 12, 2016 6:03:02 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "model.write.overwrite().save(\"./SentimentPipeLineModel/\")",
+      "dateUpdated": "Dec 12, 2016 6:03:41 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481515903437_-832171703",
+      "id": "20161212-094143_1160901631",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Dec 12, 2016 9:41:43 AM",
+      "dateStarted": "Dec 12, 2016 6:03:41 AM",
+      "dateFinished": "Dec 12, 2016 6:03:43 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val testWithLabels \u003d binarizer.transform(clean_test)\n\nval prediction \u003d model.transform(testWithLabels)",
+      "dateUpdated": "Dec 12, 2016 6:07:18 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481516260503_696311963",
+      "id": "20161212-094740_264053412",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\ntestWithLabels: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double ... 2 more fields]\n\nprediction: org.apache.spark.sql.DataFrame \u003d [text: string, sentiment: double ... 9 more fields]\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:47:40 AM",
+      "dateStarted": "Dec 12, 2016 6:07:18 AM",
+      "dateFinished": "Dec 12, 2016 6:07:19 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "z.show(prediction.select(\"text\",\"sentiLabels\",\"prediction\"))",
+      "dateUpdated": "Dec 12, 2016 6:07:58 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": true,
+          "keys": [
+            {
+              "name": "text",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "text",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "text",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "sentiment",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481516281232_-1645623944",
+      "id": "20161212-094801_562742312",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "text\tsentiLabels\tprediction\nstellargirl loooooooovvvvvveee my kindle2 not that the dx is cool but the is fantastic in its own right\t1.0\t1.0\nreading my kindle2  love it lee childs is good read\t1.0\t1.0\nok first assesment of the kindle2 it fucking rocks\t1.0\t1.0\nkenburbary youll love your kindle2 ive had mine for few months and never looked back the new big one is huge no need for remorse \t1.0\t0.0\nmikefish  fair enough but have the kindle2 and think its perfect \t1.0\t0.0\nrichardebaker no it is too big im quite happy with the kindle2\t1.0\t1.0\nfuck this economy hate aig and their non loan given asses\t0.0\t0.0\njquery is my new best friend\t1.0\t1.0\nloves twitter\t1.0\t1.0\nhow can you not love obama he makes jokes about himself\t1.0\t1.0\ncheck this video out  president obama at the white house correspondents dinner httpbitlyimxum\t0.0\t1.0\nkaroli firmly believe that obamapelosi have zero desire to be civil  its charade and slogan but they want to destroy conservatism\t0.0\t1.0\nhouse correspondents dinner was last night whoopi barbara  sherri went obama got standing ovation\t1.0\t1.0\nwatchin espnjus seen this new nike commerical with puppet lebronsht was hilariouslmao\t1.0\t1.0\ndear nike stop with the flywire that shit is waste of science and ugly love vincentx24x\t0.0\t0.0\nlebron best athlete of our generation if not all time basketball related dont want to get into intersport debates about 12\t1.0\t0.0\n was talking to this guy last night and he was telling me that he is die hard spurs fan  he also told me that he hates lebron james\t0.0\t0.0\n love lebron httpbitlypdhur\t1.0\t0.0\nludajuice lebron is beast but im still cheering the atil the end\t0.0\t1.0\npmillzz lebron is the boss\t1.0\t0.0\nsketchbug lebron is hometown hero to me lol love the lakers but lets go cavs lol\t1.0\t1.0\nlebron and zydrunas are such an awesome duo\t1.0\t1.0\nwordwhizkid lebron is beast nobody in the nba comes even close\t1.0\t0.0\ndownloading apps for my iphone so much fun  there literally is an app for just about anything\t1.0\t0.0\ngood news just had call from the visa office saying everything is finewhat relief am sick of scams out there stealing\t1.0\t0.0\nhttptwurlnlepkr4b  awesome come back from biz via fredwilson\t1.0\t1.0\nin montreal for long weekend of rr much needed\t1.0\t1.0\nbooz allen hamilton has bad ass homegrown social collaboration platform way cool  ttiv\t1.0\t1.0\nmluc09 customer innovation award winner booz allen hamilton  httppingfmc2hpp\t1.0\t1.0\nsochi2 current use the nikon d90 and love it but not as much as the canon 40d50d chose the d90 for the  video feature my mistake\t1.0\t1.0\nneed suggestions for good ir filter for my canon 40d  got some pls dm\t0.0\t1.0\nsurfit just checked my google for my business blip shows up as the second entry huh is that good or ba  httpblipfm6emhv\t0.0\t1.0\nphyreman9 google is always good place to look shouldve mentioned worked on the mustang my dad kimblet\t1.0\t1.0\nplayed with an android google phone the slide out screen scares me would break that fucker so fast still prefer my iphone\t0.0\t0.0\nus planning to resume the military tribunals at guantanamo bay only this time those on trial will be aig execs and chrysler debt holders\t0.0\t1.0\nomg so bored  my tattoooos are so itchy  help aha \t0.0\t0.0\nim itchy and miserable\t0.0\t0.0\nsekseemess no im not itchy for now maybe later lol\t0.0\t0.0\nrt jessverr love the nerdy stanford human biology videos  makes me miss school httpbitly13t7nr\t1.0\t1.0\nspinuzzi has been bit crazy with steep learning curve but lyx is really good for long docs for anything shorter it would be insane\t1.0\t0.0\nim listening to pyt by danny gokey 3 aww\t1.0\t1.0\nis going to sleep then on bike ride\t1.0\t0.0\ncant sleep my tooth is aching\t0.0\t0.0\nblah blah blah same old same old no plans today going back to sleep guess\t0.0\t0.0\nglad didnt do bay to breakers today its 1000 freaking degrees in san francisco wtf\t0.0\t0.0\nis in san francisco at bay to breakers\t0.0\t0.0\njust landed at san francisco\t0.0\t1.0\nsan francisco today  any suggestions\t0.0\t1.0\nobama administration must stop bonuses to aig ponzi schemers  httpbitly2cuig\t0.0\t0.0\nstarted to think that citi is in really deep st are they gonna survive the turmoil or are they gonna be the next aig\t0.0\t0.0\nshaunwoo haten on aig\t0.0\t1.0\nyarnthing you will not regret going to see star trek it was awesome\t1.0\t1.0\non my way to see star trek  the esquire\t0.0\t1.0\ngoing to see star trek soon with my dad\t0.0\t1.0\nannoying new trend on the internets  people picking apart michael lewis and malcolm gladwell  nobody wants to read that\t0.0\t0.0\nbill simmons in conversation with malcolm gladwell httpbitlyj9o50\t0.0\t1.0\nhighly recommend httptinyurlcomhowdavidbeatsgoliath by malcolm gladwell\t1.0\t1.0\nblink by malcolm gladwell amazing book and the tipping point\t1.0\t1.0\nmalcolm gladwell might be my new man crush\t1.0\t1.0\nomg the commercials alone on espn are going to drive me nuts\t0.0\t0.0\nrobmalon playing with twitter api sounds fun  may need to take class or find new friend who like to generate results with api code\t1.0\t0.0\nplaying with curl and the twitter api\t0.0\t0.0\nhello twitter api \t1.0\t1.0\nplaying with java and the twitter api\t0.0\t0.0\nmorind45 because the twitter api is slow and most clients arent good\t0.0\t0.0\nyahoo answers can be butt sometimes\t0.0\t0.0\nis scrapbooking with nic \t1.0\t1.0\nrt mashable five things wolfram alpha does better and vastly different than google  httpbitly6nsnr\t1.0\t1.0\njust changed my default pic to nike basketball cause bball is awesome\t1.0\t0.0\nnike owns nba playoffs ads lebron kobe carmelo httpowly7uiy  adidas billups howard  marketing branding\t0.0\t1.0\nnext time ill call myself nike\t0.0\t1.0\nnew blog post nike sb dunk low premium white gum httptrimlott\t0.0\t1.0\nrt smartchickpdx was just told that nike layoffs started today \t0.0\t0.0\nback when worked for nike we had one fav word  just do it \t1.0\t1.0\nby the way im totally inspired by this freaky nike commercial httpsnurlcomicgj9\t1.0\t1.0\ngiving weka an app engine interface using the bird strike data for the tests the logo is given\t0.0\t0.0\nbrand new canon eos 50d 15mp dslr camera canon 1785mm is lens  web technology thread brand new canon eos httpumavrevcom5a3t\t0.0\t1.0\nclass the 50d is supposed to come today \t1.0\t0.0\nneeds someone to explain lambda calculus to him \t0.0\t0.0\ntook the graduate field exam for computer science today  nothing makes you feel like more of an idiot than lambda calculus\t0.0\t0.0\nshout outs to all east palo alto for being in the buildin karizmakaze 50cal gta also thanks to profits of doom universal hempz cracka\t1.0\t1.0\nlegalgeekery yeahhhhhhhhh wouldnt really have lived in east palo alto if could have avoided it  guess its only for the summer\t0.0\t0.0\naccannis edog1203 great stanford course thanks for making it available to the public really helpful and informative for starting off\t1.0\t1.0\nnvidia names stanfords bill dally chief scientist vp of research httpbitlyfvvg9\t0.0\t1.0\nnew blog post harvard versus stanford  who wins httpbitlymcoco\t0.0\t1.0\n work til 6pm lets go lakers\t1.0\t1.0\ndamn you north korea httpbitlyktmeq\t0.0\t0.0\ncan we just go ahead and blow north korea off the map already\t0.0\t0.0\nnorth korea please cease this douchebaggery china doesnt even like you anymore httpbitlynehsl\t0.0\t0.0\nwhy the hell is pelosi in freakin china and on whose dime\t0.0\t0.0\nare you burning more cash  than chrysler and gm stop the financial tsunami where bailout means taking handout\t0.0\t0.0\ninsects have infected my spinach plant \t0.0\t0.0\nwish could catch every mosquito in the world burn em slowlythey been bitin the shit outta me 2daymosquitos are the assholes of insects\t0.0\t0.0\njust got back from church and totally hate insects\t0.0\t0.0\njust got mcdonalds goddam those eggs make me sick yeah laker up date go lakers not much of an update well its true so suck it\t0.0\t0.0\nomgg ohhdee want mcdonalds damn wonder if its open lol \t1.0\t0.0\nhistory exam studying ugh\t0.0\t0.0\n hate revision its so boring am totally unprepared for my exam tomorrow  things are not looking good\t0.0\t0.0\nhigher physics exam tommorow not lookin forward to it much \t0.0\t0.0\nits bank holiday yet im only out of work now exam season sucks\t0.0\t0.0\ncheney and bush are the real culprits  httpfwixcomarticle939496\t0.0\t1.0\nlifes bitch and so is dick cheney p2 bipart tlot tcot hhrs gop dnc httpisgddjyq\t0.0\t1.0\ndick cheneys dishonest speech about torture terror and obama fred kaplan slate httpisgddihg\t0.0\t1.0\nthe republican party is bunch of antiabortion zealots who couldnt draw flies to dump  neal boortz just now\t0.0\t1.0\nis twitters connections api broken some tweets didnt make it to twitter\t0.0\t0.0\n srsly hate the stupid twitter api timeout thing soooo annoying \t0.0\t0.0\npsychemedia really liked kswedbergs learning jquery book httpbitlypg0lt is worth look too\t1.0\t1.0\njquery ui 16 book review  httpcfbloggersorgc30631\t0.0\t1.0\nvery interesting ad from adobe by goodby silverstein  partners  youtube  adobe cs4 le sens propre httpbitlyvprpt\t1.0\t1.0\ngoodby silverstein agency new site httpwwwgoodbysilversteincom great\t1.0\t1.0\nrt designplay goodby silversteins new site httpwwwgoodbysilversteincom enjoy it nice find\t1.0\t1.0\nthe ever amazing psyop and goodby silverstein  partners for hp httpbitlyg2ru8 have to go play with after effects now\t1.0\t1.0\ntop ten most watched on viralvideo chart  love the nike mostvaluablepuppets campaign from wieden  kennedy httpbitlynr1n9\t1.0\t1.0\nzomg have g2\t1.0\t1.0\nok so lots of buzz from io2009 but how lucky are they  free g2 httpisgdhyzl\t1.0\t1.0\njust got free g2 android at google io\t1.0\t1.0\nguess ill be retiring my g1 and start using my developer g2 woot googleio\t1.0\t1.0\nat gwt fireside chat googleio\t0.0\t1.0\n am happy for philip being at googleio today\t1.0\t1.0\nlakers played great  cannot wait for thursday night lakers vs \t1.0\t1.0\nhi there does anyone have great source for advice on viral marketing httplinkgsytz8\t0.0\t1.0\njudd apatow creates fake sitcom on nbccom to market his new movie viral marketing at its best httpisgdk0yk\t1.0\t1.0\nheres case study on how to use viral marketing to add over 10000 people to your list httpsniprcomi50oz\t0.0\t1.0\nviral marketing fail this acia pills brand oughta get shut down for hacking into peoples messengers  get 56 msgs in day arrrgh\t0.0\t0.0\nwatching night at the museum  lmao\t1.0\t1.0\n loved night at the museum\t1.0\t1.0\ngoing to see the new night at the museum  movie with my family oh boy three year old in the movies fuin\t0.0\t1.0\njust got back from the movies  went to see the new night at the museum with rachel  it was good\t1.0\t1.0\njust saw the new night at the museum movieit wasokaylol 710\t0.0\t1.0\ngoing to see night at the museum with tall boy\t0.0\t1.0\nshannyoday will take you on date to see night at the museum whenever you wantit looks soooooo good\t1.0\t1.0\nno watching the night at the museum getting really good\t1.0\t1.0\nnight at the museum wolverine and junk food  perfect monday\t1.0\t1.0\nsaw night at the museum last night pretty crazy movie but the cast was awesome so it was well worth it robin williams forever\t1.0\t1.0\n saw night at the museum battle of the swithsonian today it was okay your typical kids ben stiller movie\t0.0\t1.0\ntaking katie to see night at the museum  she picked it\t0.0\t1.0\nnight at the museum tonite instead of up  oh well that yr old better enjoy it lol\t0.0\t1.0\ngm says expects announcment on sale of hummer soon  reuters wdsugm says expects announcment on sale of hummer  httpbitly4e1fv\t0.0\t1.0\nits unfortunate that after the stimulus plan was put in place twice to help gm on the back of the american people has led to the inevitable\t0.0\t0.0\ntell me again why we are giving more  to gm we should use that  for all the programs that support the unemployed\t0.0\t0.0\njdreiss oh yes but if gm dies it will only be worth more boo hahaha\t0.0\t0.0\ntime warner cable is down again 3rd time since memorial day bummer\t0.0\t0.0\n would rather pay reasonable yearly taxes for free fast internet\t0.0\t0.0\nnooooooo my dvr just died and was only half way through the ea presser hate you time warner\t0.0\t0.0\nfck time warner cable you fcking suck balls have 700 hd tv  my damn hd channels hardly ever come in bullshit\t0.0\t0.0\ntime warner has the worse customer service ever will never use them again\t0.0\t0.0\ntime warner is the devil worst possible time for the internet to go out\t0.0\t0.0\nfuck no internet damn time warner\t0.0\t0.0\ntime warner really picks the worst time to not work all want to do is get to mtvcom so can watch the hills wtfffff\t0.0\t0.0\n hate time warner soooo wish had vios cant watch the fricken mets game wo buffering feel like im watching free internet porn\t0.0\t0.0\nahhgot rid of stupid time warner today  now taking nap while the roomies cook for me pretty good end for monday \t0.0\t0.0\ntime warners hd line up is crap\t0.0\t0.0\nis being fucked by time warner cable didnt know modems could explode and susan boyle sucks too\t0.0\t0.0\ntime warner cable pulls the plug on the girlfriend experience  wwwtinyurlcomm595fk\t0.0\t0.0\ntime warner cable slogan where calling it day at 2pm happens\t0.0\t1.0\nrocawear heads to china building 300 stores httptinyurlcomnofet3\t0.0\t0.0\nclimate focus turns to beijing the united nations the us and european governments have called on china to coo httptinyurlcomlto92n\t0.0\t1.0\nmyfoxdc barrie students back from trip to china silver spring high schools class trip to china has en httptinyurlcomnlhqba\t0.0\t0.0\nthree china aerospace giants develop tianjin binhai  new area  229 yuan invested httpbitlymmidv\t0.0\t1.0\nhttpxigs04fo gm ceo china will continue to be key partner\t0.0\t1.0\nrt latimesautos is now the time to buy gm car httpbitlynrzlu\t0.0\t1.0\nrecovering from surgerywishing julesrenner was here \t0.0\t0.0\nmy wrist still hurts have to get it looked at hate the drdentistscary places  time to watch eagle eye if you want to join txt\t1.0\t0.0\ndentist tomorrow have to brush well in the morning like make my hair all nice before get it cut why\t0.0\t0.0\nthe dentist lied  wont feel any discomort prob wont even need pain pills man twippin this shit hurt how many pills can take\t0.0\t0.0\nkirstiealley my dentist is great but shes expensive\t0.0\t0.0\nkirstiealley pet dentist httpwwwfunnyvillecomfvpicturesdogdenturesshtml\t0.0\t0.0\nis studing math  tomorrow exam and dentist \t1.0\t0.0\nmy dentist was wrong wrong\t0.0\t0.0\ngoing to the dentist later\t0.0\t0.0\nson has me looking at cars online  hate car shopping  would rather go to the dentist  anyone with good car at good price to sell\t0.0\t0.0\nncaa baseball super regional  rams club httpbitlyro7nx\t0.0\t1.0\njust started playing major league baseball 2k9 httpraptrcomh3llgwar\t0.0\t0.0\ncardinals baseball advance to super regionals face csfullerton friday\t0.0\t1.0\nsony coupon code expires soon httpwwwcoupondorkcomr1796\t0.0\t0.0\nwaiting in line at safeway\t0.0\t0.0\nluke and got stopped walking out of safeway and asked to empty our pockets and lift our shirts how jacked up is that\t0.0\t0.0\ndid not realize there is gym above safeway\t0.0\t0.0\nxphile1908 have three words for you safeway dot com\t0.0\t1.0\nsafeway is very rock roll tonight\t1.0\t1.0\nbout to hit safeway gotta eat\t0.0\t0.0\njakes going to safeway\t0.0\t0.0\nfound safeway picking up few staples\t0.0\t0.0\nsafeway supermarketing via mobile coupons httpbitlyonh7w\t0.0\t1.0\nthe safeway bathroom still smells like ass\t0.0\t0.0\nat safeway on elkhorn they move like theyre dead\t0.0\t0.0\nyour normal weight and how to get there  normal eating blog httpbitlyzet8o\t0.0\t1.0\nis eating and watching movies\t0.0\t1.0\neating sashimi\t0.0\t1.0\nis eating  home made yema\t0.0\t1.0\neating cake\t0.0\t1.0\n love dwight howards vitamin water commercial now wish he was with nike and not adidas lol\t1.0\t1.0\nfound nothing at nike factory  off to banana republic outlet httpmylocme2zic\t0.0\t1.0\niphone may get radio tagging and nike recentlyreleased itunes version 82 suggests that voiceover functional httptinyurlcomoq5ctc\t0.0\t1.0\nis lovin his nike  already and thats only from running on the spot in his bedroom\t1.0\t1.0\nlaunched httpimgsearchnet  imgsearch ajax jquery webapp\t0.0\t1.0\nmatthewcyan finally got around to using jquery to make my bio collapse yay for slide animations\t1.0\t1.0\nrt jquery the ultimate jquery list  httpjquerylistcom\t0.0\t1.0\n just extracted and opensourced jquery plugin from stormweight to highlight text with regular expression httpbitlyybjkb\t0.0\t0.0\nannadebenham what was the php jquery hack\t0.0\t1.0\njquery cheat sheet httpwwwjavascripttoolboxcomjquerycheatsheet\t0.0\t1.0\nbeginning javascript and css development with jquery javascript css jquery httpbitlyto3e5\t0.0\t1.0\npdubyad right lol well get there have high expectations warren buffet style\t1.0\t1.0\nrt blknprecious1 rt great dbroos someones sitting in the shade today because someone planted tree long time ago warren buffet\t1.0\t1.0\nwarren buffet on the economy httppingfmlau0p\t0.0\t0.0\nwarren buffet became for time the richest man in the united states not by working but investing in big idea which lead to the fortune\t1.0\t1.0\naccording to the create school notre dame will have receivers in ncaa 10 at 84 or higher rating  sweet\t1.0\t1.0\nallstar basketball classic tuesday features top talent chattanoogas notre dame high school will play host httpbitlyqltja\t0.0\t1.0\nblondebroad its definitely under warranty  my experience is the amazon support for kindle is great had to contact them about my kindle2\t1.0\t0.0\nrt look available amazon kindle2  kindle dx get it here httpshortto87ub the top electronic book reader period free day ship \t0.0\t1.0\ntime warner road runner customer support here absolutely blows hate not having other highspeed net options im ready to go nuclear\t0.0\t0.0\ntime warner cable phone reps dumber than nails ugh cable was working 10 mins ago now its not wtf\t0.0\t0.0\nsiratomofbones we tried but time warner wasnt being nice so we recorded today \t0.0\t0.0\nomg  time warner fed up my internet install  instead of today  its now next saturday  another week wo internet ehfav9fhg fml\t0.0\t0.0\nwthi have never seen line this loooong at time warner before ugh\t0.0\t0.0\nimpatiently awaiting the arrival of the time warner guy its way too pretty to be inside all afternoon\t0.0\t1.0\nman accosts roger federer during french open httpffim3hcpt\t0.0\t1.0\nnaive bayes using em for text classification really frustrating\t0.0\t0.0\nwe went to stanford university today got tour made me want to go back to college its also decided all of our kids will go there\t1.0\t0.0\ninvestigation pending on death of stanford cs prof  google mentor rajeev motwani httpbitlylwour tip techmeme\t0.0\t0.0\nim going to bed it was successful weekend stanford here come\t0.0\t1.0\nkarrisfoxy if youre being harassed by calls about your car warranty changing your number wont fix that they call every number dbags\t0.0\t0.0\njust blocked united blood services using google voice they call more than those car warranty guys\t0.0\t0.0\natt is complete fail\t0.0\t0.0\nbroskiii oh snap you work at att dont you\t0.0\t0.0\nmbjthegreat really dont want att phone servicethey suck when it comes to having signal\t0.0\t0.0\n say we just cut out the small talk atts new slogan fk you give us your money apologies to bob geldof\t0.0\t1.0\npissed about atts midcontract upgrade price for the iphone its 200 more im not going to pay 499 for something thought was 299\t0.0\t0.0\nsafari is fast  even on my shitty att tethering\t0.0\t0.0\nims what is att fucking up\t0.0\t0.0\nspringsingfiend dvyers sethdaggett jlshack att dropped the ball and isnt supporting crap with the new iphone 30 fail att sucks\t0.0\t0.0\nmmbarnhill yay glad you got the phone still damn you att\t0.0\t0.0\ngoogle wave developer sandbox account request httpbitly2nylc\t0.0\t1.0\ntalk is cheap bing that ill stick with google httpbitlyxc3c8\t0.0\t1.0\ndefsounds wtf is the point of deleting tweets if they can still be found in summize and searches twitter please fix that thanks and bye\t0.0\t0.0\nmattcutts have google profiles stopped showing up in searches cant see them anymore\t0.0\t0.0\narunbasillal love google translator too  good day mate \t1.0\t1.0\nreading on my new kindle2\t1.0\t1.0\nmy kindle2 came and love it \t1.0\t1.0\nloving my new kindle2  named her kendra in case were wondering the cookbook is the tool cuz it tells all the tricks  best gift evr\t1.0\t1.0\nthe real aig scandal  httpbitlyb82px\t0.0\t1.0\nany twitter to aprs apps yet\t0.0\t0.0\n45 pros you should be following on twitter  httpisgdsmbz\t0.0\t1.0\nobama is quite good comedian check out his dinner speech on cnn  very funny jokes\t1.0\t1.0\n barack obama shows his funny side httptriml0gy  great speech\t1.0\t1.0\n like this guy barack obama shows his funny side httptriml0gy \t1.0\t1.0\nobamas speech was pretty awesome last night httpbitlyimxum\t1.0\t1.0\nreading  bill clinton fail  obama win httptinyurlcompcyxj7\t1.0\t0.0\nobama more popular than us among arabs survey president barack obamas popularity in leading arab countries  httptinyurlcomprlvqu\t1.0\t1.0\nobamas got jokes haha just got to watch bit of his after dinner speech from last night im in love with mr president \t1.0\t1.0\nlebron james got in car accident guessjust heard it on evening newswow cant believe itwill he be ok  httptwtadcom69750\t0.0\t0.0\nis it me or is this the best the playoffs have been in years oh yea lebron and melo in the finals\t1.0\t0.0\nkhalid0456 no lebron is the best\t1.0\t0.0\ntherealusher lebron is cool  like his personalityhe has good character\t1.0\t1.0\nwatching lebron highlights damn that niggas good\t1.0\t0.0\nlou911 lebron is murdering shit\t1.0\t0.0\nuscsports21 lebron is monsta and he is only 24 smh the world aint ready\t1.0\t0.0\ncthagod when lebron is done in the nba he will probably be greater than kobe like said kobe is good but there alot of good players\t1.0\t1.0\nkobe is good bt lebron has my vote\t1.0\t1.0\nkobe is the best in the world not lebron \t0.0\t1.0\nasherroth world cup 2010 access damn thats good look\t1.0\t1.0\njust bought my tickets for the 2010 fifa world cup in south africa its going to be great summer httpbitly9gezi\t1.0\t1.0\nshare disruptionfred wilsons slides for his talk at google hq  httpbitlybo8pg\t0.0\t1.0\n have to go to booz allen hamilton for 2hr meeting but then get to go home \t0.0\t0.0\nthe great indian tamasha truly will unfold from may 16 the result day for indian general election\t1.0\t1.0\ncrlane have the kindle2 ive seen pictures of the dx but havent seen it in person love my kindle  im on it everyday\t1.0\t0.0\ncriticalpath such an awesome idea  the  continual learning program with kindle2  httpbitly1zlff\t1.0\t1.0\nok do nothing just thinking about 40d\t0.0\t0.0\nfaithbabywear ooooh what model are you getting have the 40d and love love love love it\t1.0\t1.0\nthe times of india the wonder that is indias election httpbitlyp7u1h\t1.0\t0.0\nhttpisgdaruj good video from google on using search options\t1.0\t1.0\nambcharlesfield lol ah my skin is itchy  damn lawnmowing\t0.0\t0.0\nitchy back dont ya hate it\t0.0\t0.0\nstanford charity fashion show top draw httpcligsnenuah\t1.0\t1.0\nstanford universitys facebook profile is one of the most popular official university pages  httptinyurlcomp5b3fl\t1.0\t1.0\nlyx is cool\t1.0\t1.0\nsooo dissapointed they sent danny gokey home you still rock danny  my hometown hero  yeah milrockee\t1.0\t0.0\nrt passionmodel american idol fashion adam lambert tones down danny gokey cute  httpcligs7jwshv\t1.0\t1.0\ndannygokey love you danny gokey \t1.0\t1.0\nrt justindavey rt tweetmeme gm onstar now instantly sends accident location coordinates to 911  gps obsessed httpbitly16szl1\t0.0\t1.0\nso tired didnt sleep well at all last night\t0.0\t0.0\nboarding plane for san francisco in hour hr flight blech\t0.0\t0.0\nbonjour san francisco my back hurts from last night\t0.0\t1.0\nbreakers in san francisco ca httplooptus4v88bwt\t0.0\t0.0\nheading to san francisco\t0.0\t1.0\nwith my best girl for few more hours in san francisco mmmmmfamily is wonderful\t1.0\t1.0\n up big or go home  aig\t0.0\t0.0\nwent to see the star trek movie last night  very satisfying\t1.0\t1.0\n cant wait going to see star trek tonight\t1.0\t1.0\nstar trek was as good as everyone said\t1.0\t1.0\nam loving new malcolm gladwell book  outliers\t1.0\t1.0\n highly recommend malcolm gladwells the tipping point my next audiobook will probably be one of his as well\t1.0\t1.0\nmalcolm gladwell is genius at tricking people into not realizing hes fucking idiot\t0.0\t1.0\nsportsguy33 hey no offense but malcolm gladwell is pretenious annoying cunt and he brings you down cant read his shit\t0.0\t1.0\nrt clashmore httpbitlysoyv7  great article by malcolm gladwell\t1.0\t1.0\n seriously underestimated malcolm gladwell  want to meet this dude\t1.0\t1.0\n hate comcast right now everything is down cable internet  phoneughh what am to do\t0.0\t0.0\ncomcast sucks\t0.0\t0.0\nthe day never have to deal with comcast again will rank as one of the best days of my life\t0.0\t0.0\ndommm did comcast fail again\t0.0\t0.0\nhow do you use the twitter api httpbitly4vbhh\t0.0\t0.0\ncurses the twitter api limit\t0.0\t0.0\nnow can see why dave winer screams about lack of twitter api its limitations and access throttles\t0.0\t0.0\ntesting twitter api\t0.0\t1.0\narg twitter api is making me crazy\t0.0\t0.0\ntesting twitter api remote update\t0.0\t0.0\nim really loving the new search site wolframalpha makes google seem so  quaint httpwww72wolframalphacom\t1.0\t1.0\nwolfram alpha sucks even for researchers the information provided is less than you can get from google or wikipedia totally useless\t0.0\t0.0\noff to the nike factory\t1.0\t1.0\nnew nike muppet commercials are pretty cute why do we live together again\t1.0\t1.0\nnew blog post nike zoom lebron soldier iii  white  black  teal httpbitlyrouus\t0.0\t1.0\nnew blog post nike trainer httpbitly394bp\t0.0\t1.0\nfraggle312 oh those are awesome so wish they werent owned by nike \t0.0\t0.0\ntonyhawk httptwitpiccom5c7uj  awesome seeing the show friday at the shoreline amphitheatre never seen nin before cant wait \t1.0\t1.0\narhh its weka bug and spent almost two hours to find that out crappy me\t0.0\t0.0\nmitzs hey bud  np do so love my 50d although id love 5d mkii more\t1.0\t1.0\njonduenas robynlyn just got us 50d for the office \t1.0\t0.0\njust picked up my new canon 50dits beautiful  prepare for some seriously awesome photography\t1.0\t1.0\njust got my new toy canon 50d love love love it\t1.0\t1.0\nlearning about lambda calculus \t1.0\t0.0\njobs sittercity help with taking care of sick child east palo alto ca httptinyurlcomqwrr2m\t0.0\t0.0\nim moving to east palo alto\t1.0\t1.0\n atebits just finished watching your stanford iphone class session really appreciate it you rock\t1.0\t1.0\njktweet hi just saw your stanford talk and really liked your advice just saying hi from singapore yes the videos do get around\t1.0\t1.0\nmba admissions tips stanford gsb deadlines and essay topics 20092010 httptinyurlcompet4fd\t0.0\t0.0\nethics and nonprofits  httpbitlyqsxrp  stanford socialentrepreneurship\t0.0\t0.0\nlakers tonight lets go\t1.0\t1.0\nwill the lakers kick the nuggets ass tonight\t1.0\t1.0\noooooooh north korea is in troubleeeee httpbitly19epah\t0.0\t0.0\nwat the heck is north korea doing they just conducted powerful nuclear tests follow the link httpwwwmsnbcmsncomid30921379\t0.0\t1.0\nlistening to obama friggin north korea\t0.0\t0.0\n just realized we three monkeys in the white obamabidenpelosi  sarah palin 2012\t0.0\t1.0\nfoxnews pelosi should stay in china and never come back\t0.0\t0.0\nnancy pelosi gave the worst commencement speech ive ever heard yes im still bitter about this\t0.0\t0.0\nugh the amount of times these stupid insects have bitten me grr\t0.0\t0.0\nprettiest insects ever  pink katydids httpbitly2upw2p\t1.0\t1.0\njust got barraged by horde of insects hungry for my kitchen light so scary\t0.0\t0.0\njust had mcdonalds for dinner it was goooood big mac meal \t1.0\t1.0\nahh yes lol ima tell my hubby to go get me sum mcdonalds \t1.0\t1.0\nstopped to have lunch at mcdonalds chicken nuggetssss  yummmmmy\t1.0\t0.0\ncould go for lot of mcdonalds mean lot\t1.0\t0.0\nmy exam went good helloleonie your prayers worked \t1.0\t0.0\nonly one exam left and am so happy for it \t1.0\t0.0\nmath review im going to fail the exam\t0.0\t0.0\ncolin powell rocked yesterday on cbs cheney needs to shut the hell up and go homepowell is man of honor and served our country proudly\t0.0\t1.0\nobviously not siding with cheney here httpbitly19j2d\t0.0\t1.0\nabsolutely hilarious from mashable  httpbitlybccwt\t1.0\t1.0\nmashable never did thank you for including me in your top 100 twitter authors you rock  new wave httpbitlyeorfv\t1.0\t1.0\nlearning jquery 13 book review  httpcfbloggersorgc30629\t0.0\t1.0\nrt shrop awesome jquery reference book for coda httpwwwmacpeepscomcoda webdesign\t1.0\t1.0\nive been sending emails like crazy today to my contactsdoes anyone have contact at goodby silversteinid love to speak to them\t1.0\t1.0\nadobe cs4 commercial by goodby silverstein httpbitly1aikhf\t0.0\t1.0\ngoodby silversteins new site httpwwwgoodbysilversteincom enjoy it\t1.0\t1.0\nwow everyone at the google io conference got free g2s with month of unlimited service\t1.0\t1.0\nvkerkez dood got free google android phone at the io conference the g2\t1.0\t1.0\norli the g2 is amazing btw huge improvement over the g1\t1.0\t1.0\nhtml demos lots of great stuff to come yes im excited  httphtmlfiveappspotcom io2009 googleio\t1.0\t1.0\ngoogleio httptwitpiccom62shi  yay happy place place place  love google\t1.0\t1.0\ngoogleio  o3d  bringing 3d graphics to the browser very nice tbh funfun\t1.0\t1.0\nawesome viral marketing for funny people httpwwwnbccomyoteach\t1.0\t1.0\nwatching programme about the life of hitler its only enhancing my geekiness of history\t0.0\t1.0\nsaw night at the museum out of sheer desperation who is funding these movies\t0.0\t1.0\nnight at the museum pretty furkin good\t1.0\t1.0\nwatching night at the museum  giggling\t1.0\t1.0\npambeeslyjenna jenna went to see night at the museum today and was so surprised to see three cast members from the office\t0.0\t1.0\nabout to watch night at the museum with ryan and stacy\t0.0\t1.0\ngetting ready to go watch night at the museum  dum dum you give me gum gum\t0.0\t1.0\nback from seeing star trek and night at the museum star trek was amazing but night at the museum was eh\t0.0\t1.0\njust watched night at the museum so stinkin cute\t1.0\t1.0\nso night at the museum was awesome much better than part next weekend well see up\t1.0\t1.0\n think may have new favorite restaurant on our way to see night at the museum \t0.0\t1.0\nup was sold out so im seeing night at the museum im  years old\t0.0\t0.0\nsaw the new night at the museum and loved it next is to go see up in 3d\t1.0\t1.0\nit is shame about gm what if they are forced to make only cars the white house thinks will sell what do you think\t0.0\t0.0\nas may have noticed not too happy about the gm situation nor aig lehman et al\t0.0\t1.0\nobama nationalization of gm to be shortterm ap httptinyurlcommd347r\t0.0\t0.0\npittstock gm good riddance  sad though\t0.0\t0.0\n will never buy government motors vehicle until just recently drove gm cars since 1988 when bought  httptinyurlcomlulsw8\t0.0\t0.0\nhaving the old cocacola guy on the gm board is stupid has heck tcot ala\t0.0\t1.0\nrantsandraves the worst thing about gm concord  pleasant hill  martinez is the fucking uaw  httpbuzzupcom4ueb\t0.0\t0.0\ngive man fish feed him for the day teach him to fish feed him for life buy him gm and fk him over for good\t0.0\t0.0\nthe more hear about this gm thing the more angry get billions wasted more bullshit all for something like 40k employees and all the\t0.0\t0.0\nquanttrader own gm car and it is junk as far as quality compared to honda\t0.0\t0.0\nsad daybankrupt gm\t0.0\t0.0\nis upset about the whole gm thing life as know it is so screwed up\t0.0\t0.0\nwhoever is running time warner needs to be repeatedly raped by rhino so they understand the consequences of putting out shitty cable svcs\t0.0\t0.0\ntime warner ceo hints at online fees for magazines  ap  read from mountain viewunited states views 16209 httpbitlyudfch\t0.0\t0.0\nwftb joining bit late my connection was down boo time warner\t0.0\t0.0\ncox or time warner  cox is cheaper and gets b on dslreports  tw is more expensive and gets c\t0.0\t0.0\n am furious with time warner and their phone promotions\t0.0\t1.0\njust got home from chickfila with the boys damn my internets down  stupid time warner\t0.0\t0.0\ncould timewarner cable suck more  no\t0.0\t0.0\npissed at time warner for causin me to have slow internet problems\t0.0\t0.0\nsportsguy33 ummm having some time warner problems\t0.0\t0.0\nyou guys see this  why does time warner have to suck so much ass  really wish could get uverse at my apartment httpbitlys594j\t0.0\t0.0\nrt sportsguy33 the upside to time warner unhelpful phone operators superslow onsite service crap thats not an upside\t0.0\t0.0\nrt sportsguy33 new time warner slogan time warner\t0.0\t1.0\nconfirmed its time warners fault not facebooks that fb is taking about minutes to load so tempted to switch to verizon \t0.0\t0.0\nsportsguy33 time warner  epic fail\t0.0\t0.0\nlawson to head newedge hong kong httpbitlyxlqsd business china\t0.0\t0.0\nweird piano guitar house in china httpu2sme72i8\t0.0\t1.0\nsend us your gmchevy photos httptinyurlcomluzkpq\t0.0\t1.0\n know how sad is that  rt caseymercier 1st day of hurricane season thats less scarey than govt taking over gm\t0.0\t0.0\ngm files bankruptcy not good sign\t0.0\t0.0\nyankees won mets lost its good day\t1.0\t0.0\nmy dentist appt today was actually quite enjoyable\t1.0\t0.0\n hate the effing dentist\t0.0\t0.0\nstevemoakler had dentist appt this morning and had the same conversation\t0.0\t0.0\nkirstiealley hate going to the dentist \t0.0\t0.0\n hate the dentistwho invented them anyways\t0.0\t0.0\nthis dentists office is cold \t0.0\t0.0\ncheck this video out  david after dentist httpbitly47aw2\t0.0\t0.0\nfirst dentist appointment in years on wednesday possibly\t0.0\t0.0\ntom shanahans latest column on sdsu and its ncaa baseball regional appearance httpowlyaxhu\t0.0\t1.0\nbaseballamericacom blog baseball america prospects blog  blog  httpbitlyett8a\t0.0\t1.0\nportland city politics may undo baseball park httptinyurlcomlpjquj\t0.0\t0.0\nrt watersisweb ca merceds water bottled by safeway resold at profit wells are drying up across the county httptinyurlcommb573s\t0.0\t0.0\ndropped her broccoli walking home from safeway  so depressed\t0.0\t0.0\nronjon we dont have safeway\t0.0\t0.0\njust applied at safeway yeeeee\t1.0\t1.0\n safeway place is nightmare right now bumming\t0.0\t0.0\nat safeway with dad\t0.0\t0.0\nhate safeway select green tea icecream bought two cartons what waste of money \t0.0\t0.0\nsafeway with marvin janelle and auntie lhu\t0.0\t1.0\nsafeway offering mobile coupons httpbitlyonh7w\t0.0\t1.0\nphillies driving in the cadillac with the top down in cali win 53  httptinyurlcomnzcjqa\t0.0\t1.0\nsaved money by opting for grocery store trip and stocking food in hotel room fridge vs eating out every night while out of town\t0.0\t0.0\nlounging around eating taco bell and watching ncis before work tonight need help staying awake\t0.0\t1.0\neating breakfast and then school\t0.0\t1.0\nstill hungry after eating\t0.0\t0.0\n10 tips for healthy eating  resultsby fitness blog  fitness  httpbitly62gfn\t0.0\t1.0\nwith the boyfriend eating quesadilla\t0.0\t1.0\neating dinner meat chips and risotto\t0.0\t1.0\ngot new pair of nike shoes pics up later\t0.0\t1.0\nnike sb blazer high acg custom  brad douglas  httptimesurlat45a448\t0.0\t1.0\nnike rocks im super grateful for what ive done with them the european division of nike is beyond whitstyles muchasmuertes\t1.0\t1.0\nnike air yeezy khakipink colorway release  httpsharesbjfn\t0.0\t0.0\nevelynbyrne have you tried nike v addictive\t1.0\t1.0\nerickoston that looks an awful lot like one of nikes private jetsim just sayin\t0.0\t0.0\nthe nike training club beta iphone app looks very interesting\t1.0\t1.0\nargghhhh why wont  my jquery appear in safari bad safari \t0.0\t0.0\ndevsnippets  jquery tools  javascript ui components for the web httpinblogsorggohfuqt\t0.0\t1.0\nall about ajaxjquery css javascript and more many examples httpajaxiancom\t0.0\t1.0\nim ready to drop the pretenses am forever in love with jquery and want to marry it sorry ladies this nerd is jqueryspokenforjs\t1.0\t1.0\nthis is cold was looking at googles chartvisualization api and found this jquery wrapper for the api  httptinyurlcommq52bq\t0.0\t0.0\n spent most of my day reading jquery book now to start drinking some delirium tremens\t0.0\t1.0\njquery selectors httpcodylindleycomjqueryselectors\t0.0\t1.0\nhow to implement news ticker with jquery and ten lines of code httpbitlycznfj\t0.0\t1.0\nwhats buffet doing warren buffett kicks butt in battle of the boots posted byalex crippe httpbitlyauizo\t0.0\t1.0\nsuper investors great weekend read here from warren buffet oldie but goodie httptinyurlcomoqxgga\t1.0\t1.0\nim truly braindead  couldnt come up with warren buffets name to save my soul\t0.0\t1.0\nreading michael palin book the python yearsgreat book also recommend warren buffet  nelson mandelas bio\t1.0\t1.0\n mean im down with notre dame if have to  its good school id be closer to dan id enjoy it\t1.0\t1.0\n cant watch tv without tivo  and after all these years the timewarner dvr  still sucks httpwwwdavehittcommarch03twdvrhtml\t0.0\t0.0\nid say some sports writers are idiots for saying roger federer is one of the best ever in tennis  roger federer is the best ever in tennis\t1.0\t1.0\n still love my kindle2 but reading the new york times on it does not feel natural miss the bloomingdale ads\t0.0\t1.0\n love my kindle2 no more stacks of books to trip over on the way to the loo\t1.0\t1.0\nalthough todays keynote rocked for every great announcement att shit on us just little bit more\t0.0\t1.0\nsheridanmarfil  its not so much my obsession with cell phones but the iphone  im slave to att forever because of it \t0.0\t0.0\nfreitasm oh see thought att were 900mhz wcdma\t0.0\t0.0\nplip where did you read about tethering support phil  just att or will o2 be joining in\t0.0\t0.0\nfuzzball is more fun than att httpfuzzballcomtwitter\t0.0\t1.0\ntoday is good day to dislike att vote out of office indeed danielpunkass\t0.0\t0.0\ngot my wave sandbox invite extra excited too bad have class now but ill play with it soon enough io2009 wave\t1.0\t1.0\nlooks like summize has gone down too many tweets from wwdc perhaps\t0.0\t1.0\n hope the girl at work  buys my kindle2\t0.0\t1.0\nmissed this insightfilled may column one smart guy looking closely at why hes impressed with kindle2 httpbitlyi0pey wroush\t0.0\t1.0\nsklososky thanks so much from one of your very happy kindle2 winners i was so surprised fabulous thank you best kathleen\t1.0\t1.0\nman kinda dislike apple right now case in point the iphone 3gs wish there was video recorder app please httpbitlydzm1t\t0.0\t0.0\ncwong08 have kindle2  sony prs500 like it physical device feels good font is nice pg turns are snappy enuf ui little klunky\t1.0\t0.0\nthe kindle2 seems the best ereader but will it work in the uk and where can get one\t1.0\t0.0\n have google addiction thank you for pointing that out annamartin123 hahaha\t1.0\t1.0\nrubygem my primary debit card is visa electron\t0.0\t0.0\noff to the bank to get my new visa platinum card\t0.0\t1.0\ndearest google you rich bastards the visa card you sent me doesnt work why screw little guy like me\t0.0\t0.0\nhas date with bobby flay and gut fieri from food network\t0.0\t1.0\nexcited about seeing bobby flay and guy fieri tomorrow at the great american food  music fest\t1.0\t1.0\ngonna go see bobby flay 2moro at shoreline eat and drink gonna be good\t1.0\t0.0\ncant wait for the great american food and music festival at shoreline tomorrow  mmmkatz pastrami and bobby flay yes please\t1.0\t1.0\nmy dad was in ny for day we ate at mesa grill last night and met bobby flay so much fun except completely lost my voice today\t1.0\t0.0\nfighting with latex again\t0.0\t0.0\niheartseverus we love you too and dont want you to die  latex  the devil\t0.0\t0.0\n hours hours of inkscape crashing normally solid as rock hours of latex complaining at the slightest thing cant take any more\t0.0\t0.0\nhow to track iran with social media httpbitly2boqu\t0.0\t0.0\nshits hitting the fan in irancraziness indeed iranelection\t0.0\t0.0\nmonday already iran may implode kitchen is disaster annagoss seems happy sebulous had nice weekend and goldpanda is great whoop\t0.0\t0.0\ntwitter stock buzz aapl esf spy spx palm  updated 1200 pm\t0.0\t1.0\ngetting ready to test out some burger receipes this weekend bobby flay has some great receipes to try thanks bobby\t1.0\t1.0\njohncmayer is bobby flay joining you\t0.0\t1.0\n lam so in love with bobby flay he is my favorite rt terrysimpson bflay you need place in phoenix we have great peppers here\t1.0\t1.0\n just created my first latex file from scratch that didnt work out very well see amandabittner  its great time waster\t0.0\t1.0\nusing linux and loving it  so much nicer than windows looking forward to using the wysiwyg latex editor\t1.0\t1.0\nafter using latex lot any other typeset mathematics just looks hideous\t1.0\t0.0\nask programming latex or indesign submitted by calcio1 link comment httptinyurlcommyfmf7\t0.0\t1.0\non that note hate word hate pages hate latex there said it hate latex all you texn3rds can come kill me now\t0.0\t0.0\nahhh back in real text editing environment 3 latex\t1.0\t1.0\ntrouble in iran see hmm iran iran so far away flockofseagullsweregeopoliticallycorrect\t0.0\t0.0\nreading the tweets coming out of iran the whole thing is terrifying and incredibly sad\t0.0\t0.0\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:48:01 AM",
+      "dateStarted": "Dec 12, 2016 6:07:58 AM",
+      "dateFinished": "Dec 12, 2016 6:07:59 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val evaluator \u003d new MulticlassClassificationEvaluator()\n  .setLabelCol(\"sentiLabels\")\n  .setPredictionCol(\"prediction\")\n  .setMetricName(\"accuracy\")\nval accuracy \u003d evaluator.evaluate(prediction)\nprintln(\"Test Error \u003d \" + (1.0 - accuracy))",
+      "dateUpdated": "Dec 12, 2016 6:08:05 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481516296366_913756388",
+      "id": "20161212-094816_1022643454",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nevaluator: org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator \u003d mcEval_ae64ed4555e8\n\naccuracy: Double \u003d 0.6706827309236948\nTest Error \u003d 0.3293172690763052\n"
+      },
+      "dateCreated": "Dec 12, 2016 9:48:16 AM",
+      "dateStarted": "Dec 12, 2016 6:08:05 AM",
+      "dateFinished": "Dec 12, 2016 6:08:07 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "dateUpdated": "Dec 12, 2016 9:48:51 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481516320534_1925123329",
+      "id": "20161212-094840_650982911",
+      "dateCreated": "Dec 12, 2016 9:48:40 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "twitter Sentiment Analysis",
+  "id": "2C3J2RNGK",
+  "angularObjects": {
+    "2C2W2FVJC:shared_process": [],
+    "2C39FZ8SW:shared_process": [],
+    "2C4SWDSYP:shared_process": [],
+    "2C6ACPRR9:shared_process": [],
+    "2C67P7WNN:shared_process": [],
+    "2C3JT2J9B:shared_process": [],
+    "2C381CQZX:shared_process": [],
+    "2C5ZF2UYA:shared_process": [],
+    "2C346NBJD:shared_process": [],
+    "2C5EA8GKF:shared_process": [],
+    "2C5TB4XE4:shared_process": [],
+    "2C5927AKY:shared_process": [],
+    "2C2WS8EFF:shared_process": [],
+    "2C4YCCN28:shared_process": [],
+    "2C5Z4WPH6:shared_process": [],
+    "2C49GJFNJ:shared_process": [],
+    "2C66EMPUC:shared_process": [],
+    "2C2U3UV4V:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

@@ -1,0 +1,234 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md #TwitterStream",
+      "dateUpdated": "Dec 4, 2016 4:25:46 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1480848732905_-306753553",
+      "id": "20161204-162212_1825127053",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch1\u003eTwitterStream\u003c/h1\u003e\n"
+      },
+      "dateCreated": "Dec 4, 2016 4:22:12 AM",
+      "dateStarted": "Dec 17, 2016 12:41:00 AM",
+      "dateFinished": "Dec 17, 2016 12:41:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%python\n\nimport twitter\napi \u003d twitter.Api(consumer_key\u003d\"GSmUZJz8XQsMM89d3gpJ1sdW1\",\n                  consumer_secret\u003d\"bVlUbZwHzCnpOfWc8MrWStzV7Mj4GUtAHex2pfLKOsgGJ3CA6T\",\n                  access_token_key\u003d\"1954292516-So7GAid1x2NzxQXauP6qkQ0Ha7wzyMOPXwoeNqt\",\n                  access_token_secret\u003d\"uo126JopSBYQVBf3PaWBaMYdEiVxCONJnaTBu4tOaiMmB\")",
+      "dateUpdated": "Dec 17, 2016 12:16:58 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1480848729087_-1778802844",
+      "id": "20161204-162209_2067563911",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "Exception in thread Thread-31:\nTraceback (most recent call last):\n  File \"/usr/local/anaconda/lib/python2.7/threading.py\", line 801, in __bootstrap_inner\n    self.run()\n  File \"\u003cstdin\u003e\", line 11, in run\n  File \"/usr/local/anaconda/lib/python2.7/site-packages/twitter/api.py\", line 4572, in GetStreamFilter\n    data \u003d self._ParseAndCheckTwitter(line.decode(\u0027utf-8\u0027))\n  File \"/usr/local/anaconda/lib/python2.7/site-packages/twitter/api.py\", line 4858, in _ParseAndCheckTwitter\n    raise TwitterError({\u0027message\u0027: \"Exceeded connection limit for user\"})\nTwitterError: {\u0027message\u0027: \u0027Exceeded connection limit for user\u0027}\n\n"
+      },
+      "dateCreated": "Dec 4, 2016 4:22:09 AM",
+      "dateStarted": "Dec 17, 2016 12:41:00 AM",
+      "dateFinished": "Dec 17, 2016 12:41:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%python\n\nimport threading\nimport twitter\nimport json\nfrom dateutil.parser import parse\nimport time \nimport datetime\n\nclass twitterStreamReader(threading.Thread):\n    \n    def __init__(self,outputDir,twitterApi):\n        super(twitterStreamReader, self).__init__()\n        self.outputDir \u003d outputDir\n        self.twitterApi \u003d twitterApi\n        self._stop \u003d threading.Event()\n        self.count \u003d 0\n        \n    def run(self):\n        for line in self.twitterApi.GetStreamFilter(locations\u003d[\"65\",\"5\",\"100\",\"45\"], languages \u003d [\u0027en\u0027]):\n            if \"id\" in line.keys():\n                with open(outputDir+str(line[\"id\"])+\".json\",\u0027w\u0027) as f:\n                    f.write(json.dumps(\n                            {\n                                \"timestamp\": long(time.mktime(parse(line[\"created_at\"]).timetuple())), \n                                \"text\": line[\"text\"]\n                            }\n                        )\n                    )\n                self.count+\u003d1\n                \n            if self.stopped():\n                break\n        \n        \n        \n    def stop(self):\n        self._stop.set()\n        return self.count\n    \n    \n    def stopped(self):\n        return self._stop.isSet()\n        ",
+      "dateUpdated": "Dec 12, 2016 6:46:10 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1480856142330_1604485152",
+      "id": "20161204-182542_666879548",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Dec 4, 2016 6:25:42 AM",
+      "dateStarted": "Dec 17, 2016 12:41:00 AM",
+      "dateFinished": "Dec 17, 2016 12:41:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%python \n\napi \u003d twitter.Api(consumer_key\u003d\"GSmUZJz8XQsMM89d3gpJ1sdW1\",\n                  consumer_secret\u003d\"bVlUbZwHzCnpOfWc8MrWStzV7Mj4GUtAHex2pfLKOsgGJ3CA6T\",\n                  access_token_key\u003d\"1954292516-So7GAid1x2NzxQXauP6qkQ0Ha7wzyMOPXwoeNqt\",\n                  access_token_secret\u003d\"uo126JopSBYQVBf3PaWBaMYdEiVxCONJnaTBu4tOaiMmB\")\n\noutputDir \u003d \"./data_ss/\"\n                  \nts \u003d twitterStreamReader(outputDir, api)\nts.start()\n",
+      "dateUpdated": "Dec 12, 2016 6:52:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481262878505_-1562468503",
+      "id": "20161209-112438_348360544",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Dec 9, 2016 11:24:38 AM",
+      "dateStarted": "Dec 17, 2016 12:41:00 AM",
+      "dateFinished": "Dec 17, 2016 12:41:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%python\n\nts.stop()\n",
+      "dateUpdated": "Dec 12, 2016 9:23:11 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1480857384072_-234086990",
+      "id": "20161204-184624_1938326280",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "0\n"
+      },
+      "dateCreated": "Dec 4, 2016 6:46:24 AM",
+      "dateStarted": "Dec 17, 2016 12:41:00 AM",
+      "dateFinished": "Dec 17, 2016 12:41:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "dateUpdated": "Dec 9, 2016 2:05:51 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1481272540750_-1574409472",
+      "id": "20161209-140540_1379927924",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Dec 9, 2016 2:05:40 AM",
+      "dateStarted": "Dec 17, 2016 12:41:00 AM",
+      "dateFinished": "Dec 17, 2016 12:41:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Twiiter API with Python",
+  "id": "2C61X4D1N",
+  "angularObjects": {
+    "2C2W2FVJC:shared_process": [],
+    "2C39FZ8SW:shared_process": [],
+    "2C4SWDSYP:shared_process": [],
+    "2C6ACPRR9:shared_process": [],
+    "2C67P7WNN:shared_process": [],
+    "2C3JT2J9B:shared_process": [],
+    "2C381CQZX:shared_process": [],
+    "2C5ZF2UYA:shared_process": [],
+    "2C346NBJD:shared_process": [],
+    "2C5EA8GKF:shared_process": [],
+    "2C5TB4XE4:shared_process": [],
+    "2C5927AKY:shared_process": [],
+    "2C2WS8EFF:shared_process": [],
+    "2C4YCCN28:shared_process": [],
+    "2C5Z4WPH6:shared_process": [],
+    "2C49GJFNJ:shared_process": [],
+    "2C66EMPUC:shared_process": [],
+    "2C2U3UV4V:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default",
+    "cron": "0 0/1 * * * ?"
+  },
+  "info": {}
+}
