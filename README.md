@@ -1,7 +1,7 @@
 # twitter-dashboard
 Streaming Dashboard of tweets from India using Apache spark 2.0 and Zeppelin
 
-## Sentiment on tweets from India
+## Sentiment Analysis on tweets from India
 
 ![India Tweets](https://github.com/gautham20/twitter-dashboard/blob/master/images/IndiaTweets.png)
 
