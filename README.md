@@ -3,7 +3,7 @@ Streaming Dashboard of tweets from India using Apache spark 2.0 and Zeppelin
 
 ## Sentiment on tweets from India
 
-![alt_tag][india_tweets]
+![alt_tag](https://drive.google.com/open?id=0B6XJQpAl7PAdaHlLRzdoeWRFNU0)
 
 ## Twitter During Vardah Cyclone
 
